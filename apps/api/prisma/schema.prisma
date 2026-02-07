@@ -5,10 +5,167 @@
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
-  provider = "prisma-client"
+  provider = "prisma-client-js"
   output   = "../generated/prisma"
 }
 
 datasource db {
   provider = "postgresql"
+}
+
+enum MemberRole {
+  member
+  admin
+}
+
+enum InviteStatus {
+  pending
+  accepted
+  declined
+}
+
+model User {
+  id                String             @id @default(cuid())
+  keycloakSubject   String             @unique
+  email             String             @unique
+  name              String?
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+  memberships       ProjectMember[]
+  notes             Note[]
+  trainings         Training[]
+  visitedLocations  LocationVisited[]
+  wishlistLocations LocationWishlist[]
+  sentMotds         Motd[]             @relation("MotdFromUser")
+  receivedMotds     Motd[]             @relation("MotdToUser")
+}
+
+model Project {
+  id          String             @id @default(cuid())
+  name        String
+  description String?
+  archivedAt  DateTime?
+  createdAt   DateTime           @default(now())
+  updatedAt   DateTime           @updatedAt
+  members     ProjectMember[]
+  invites     ProjectInvite[]
+  notes       Note[]
+  trainings   Training[]
+  visited     LocationVisited[]
+  wishlist    LocationWishlist[]
+  motds       Motd[]
+}
+
+model ProjectMember {
+  id        String     @id @default(cuid())
+  projectId String
+  userId    String
+  role      MemberRole @default(member)
+  createdAt DateTime   @default(now())
+
+  project Project @relation(fields: [projectId], references: [id])
+  user    User    @relation(fields: [userId], references: [id])
+
+  @@unique([projectId, userId])
+  @@index([userId])
+}
+
+model ProjectInvite {
+  id        String       @id @default(cuid())
+  projectId String
+  email     String
+  token     String       @unique
+  status    InviteStatus @default(pending)
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+
+  project Project @relation(fields: [projectId], references: [id])
+
+  @@index([projectId, status])
+}
+
+model Motd {
+  id         String   @id @default(cuid())
+  projectId  String
+  fromUserId String
+  toUserId   String
+  message    String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  project  Project @relation(fields: [projectId], references: [id])
+  fromUser User    @relation("MotdFromUser", fields: [fromUserId], references: [id])
+  toUser   User    @relation("MotdToUser", fields: [toUserId], references: [id])
+
+  @@unique([projectId, fromUserId, toUserId])
+  @@index([projectId])
+}
+
+model Note {
+  id        String   @id @default(cuid())
+  projectId String
+  authorId  String
+  title     String
+  body      String
+  pinned    Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  project Project @relation(fields: [projectId], references: [id])
+  author  User    @relation(fields: [authorId], references: [id])
+
+  @@index([projectId, createdAt])
+}
+
+model Training {
+  id        String   @id @default(cuid())
+  projectId String
+  authorId  String
+  date      DateTime
+  duration  Int
+  type      String
+  intensity Int?
+  notes     String?
+  tags      String[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  project Project @relation(fields: [projectId], references: [id])
+  author  User    @relation(fields: [authorId], references: [id])
+
+  @@index([projectId, date])
+}
+
+model LocationVisited {
+  id        String   @id @default(cuid())
+  projectId String
+  authorId  String
+  name      String
+  date      DateTime
+  notes     String?
+  tags      String[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  project Project @relation(fields: [projectId], references: [id])
+  author  User    @relation(fields: [authorId], references: [id])
+
+  @@index([projectId, date])
+}
+
+model LocationWishlist {
+  id        String   @id @default(cuid())
+  projectId String
+  authorId  String
+  name      String
+  priority  Int
+  notes     String?
+  tags      String[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  project Project @relation(fields: [projectId], references: [id])
+  author  User    @relation(fields: [authorId], references: [id])
+
+  @@index([projectId, priority])
 }
