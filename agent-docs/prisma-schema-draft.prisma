@@ -1,0 +1,139 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum RecipeStatus {
+  planned
+  cooked
+}
+
+enum MemberRole {
+  member
+  admin
+}
+
+model User {
+  id         String         @id @default(cuid())
+  email      String         @unique
+  name       String?
+  createdAt  DateTime       @default(now())
+  updatedAt  DateTime       @updatedAt
+  members    CoupleMember[]
+  notes      Note[]
+  workouts   Workout[]
+  visits     PlaceVisited[]
+  wishlist   PlaceWishlist[]
+  recipes    Recipe[]
+}
+
+model Couple {
+  id         String         @id @default(cuid())
+  name       String
+  createdAt  DateTime       @default(now())
+  updatedAt  DateTime       @updatedAt
+  members    CoupleMember[]
+  notes      Note[]
+  workouts   Workout[]
+  visits     PlaceVisited[]
+  wishlist   PlaceWishlist[]
+  recipes    Recipe[]
+}
+
+model CoupleMember {
+  id        String     @id @default(cuid())
+  coupleId  String
+  userId    String
+  role      MemberRole @default(member)
+  createdAt DateTime   @default(now())
+
+  couple    Couple     @relation(fields: [coupleId], references: [id])
+  user      User       @relation(fields: [userId], references: [id])
+
+  @@unique([coupleId, userId])
+}
+
+model Note {
+  id        String   @id @default(cuid())
+  coupleId  String
+  authorId  String
+  title     String
+  body      String
+  pinned    Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  couple    Couple   @relation(fields: [coupleId], references: [id])
+  author    User     @relation(fields: [authorId], references: [id])
+
+  @@index([coupleId, createdAt])
+}
+
+model Workout {
+  id        String   @id @default(cuid())
+  coupleId  String
+  authorId  String
+  date      DateTime
+  duration  Int
+  tags      String[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  couple    Couple   @relation(fields: [coupleId], references: [id])
+  author    User     @relation(fields: [authorId], references: [id])
+
+  @@index([coupleId, date])
+}
+
+model PlaceVisited {
+  id        String   @id @default(cuid())
+  coupleId  String
+  authorId  String
+  name      String
+  date      DateTime
+  notes     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  couple    Couple   @relation(fields: [coupleId], references: [id])
+  author    User     @relation(fields: [authorId], references: [id])
+
+  @@index([coupleId, date])
+}
+
+model PlaceWishlist {
+  id        String   @id @default(cuid())
+  coupleId  String
+  authorId  String
+  name      String
+  priority  Int
+  notes     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  couple    Couple   @relation(fields: [coupleId], references: [id])
+  author    User     @relation(fields: [authorId], references: [id])
+
+  @@index([coupleId, priority])
+}
+
+model Recipe {
+  id          String       @id @default(cuid())
+  coupleId    String
+  authorId    String
+  title       String
+  ingredients String
+  steps       String
+  status      RecipeStatus @default(planned)
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  couple      Couple       @relation(fields: [coupleId], references: [id])
+  author      User         @relation(fields: [authorId], references: [id])
+
+  @@index([coupleId, status])
+}

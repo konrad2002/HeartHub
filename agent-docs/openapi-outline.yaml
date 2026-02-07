@@ -1,0 +1,214 @@
+openapi: 3.1.0
+info:
+  title: HeartHub API
+  version: 0.1.0
+  description: API outline for couples dashboard
+servers:
+  - url: https://api.hearthub.local
+paths:
+  /health:
+    get:
+      summary: Health check
+      responses:
+        "200":
+          description: OK
+  /me:
+    get:
+      summary: Get current user
+      responses:
+        "200":
+          description: OK
+  /couples:
+    get:
+      summary: List couples for current user
+      responses:
+        "200":
+          description: OK
+    post:
+      summary: Create couple
+      responses:
+        "201":
+          description: Created
+  /couples/{coupleId}:
+    get:
+      summary: Get couple
+      parameters:
+        - name: coupleId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+  /notes:
+    get:
+      summary: List notes
+      responses:
+        "200":
+          description: OK
+    post:
+      summary: Create note
+      responses:
+        "201":
+          description: Created
+  /notes/{noteId}:
+    get:
+      summary: Get note
+      parameters:
+        - name: noteId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+    patch:
+      summary: Update note
+      responses:
+        "200":
+          description: OK
+    delete:
+      summary: Delete note
+      responses:
+        "204":
+          description: No Content
+  /workouts:
+    get:
+      summary: List workouts
+      responses:
+        "200":
+          description: OK
+    post:
+      summary: Create workout
+      responses:
+        "201":
+          description: Created
+  /workouts/{workoutId}:
+    get:
+      summary: Get workout
+      parameters:
+        - name: workoutId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+    patch:
+      summary: Update workout
+      responses:
+        "200":
+          description: OK
+    delete:
+      summary: Delete workout
+      responses:
+        "204":
+          description: No Content
+  /places/visited:
+    get:
+      summary: List visited places
+      responses:
+        "200":
+          description: OK
+    post:
+      summary: Create visited place
+      responses:
+        "201":
+          description: Created
+  /places/visited/{placeId}:
+    get:
+      summary: Get visited place
+      parameters:
+        - name: placeId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+    patch:
+      summary: Update visited place
+      responses:
+        "200":
+          description: OK
+    delete:
+      summary: Delete visited place
+      responses:
+        "204":
+          description: No Content
+  /places/wishlist:
+    get:
+      summary: List wishlist places
+      responses:
+        "200":
+          description: OK
+    post:
+      summary: Create wishlist place
+      responses:
+        "201":
+          description: Created
+  /places/wishlist/{placeId}:
+    get:
+      summary: Get wishlist place
+      parameters:
+        - name: placeId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+    patch:
+      summary: Update wishlist place
+      responses:
+        "200":
+          description: OK
+    delete:
+      summary: Delete wishlist place
+      responses:
+        "204":
+          description: No Content
+  /recipes:
+    get:
+      summary: List recipes
+      responses:
+        "200":
+          description: OK
+    post:
+      summary: Create recipe
+      responses:
+        "201":
+          description: Created
+  /recipes/{recipeId}:
+    get:
+      summary: Get recipe
+      parameters:
+        - name: recipeId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+    patch:
+      summary: Update recipe
+      responses:
+        "200":
+          description: OK
+    delete:
+      summary: Delete recipe
+      responses:
+        "204":
+          description: No Content
+  /feed:
+    get:
+      summary: Dashboard feed
+      responses:
+        "200":
+          description: OK
