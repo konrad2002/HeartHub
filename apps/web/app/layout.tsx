@@ -1,5 +1,6 @@
 import type {Metadata} from "next";
 import {Fraunces, Space_Grotesk} from "next/font/google";
+import {AuthStatus} from "./auth-status";
 import {Providers} from "./providers";
 import "./globals.css";
 
@@ -69,6 +70,7 @@ export default function RootLayout({
                         <div className="header-actions">
                             <button className="btn ghost">Invite</button>
                             <button className="btn primary">New project</button>
+                            <AuthStatus />
                         </div>
                     </header>
                     <main className="app-content">{children}</main>

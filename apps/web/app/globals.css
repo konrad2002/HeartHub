@@ -144,7 +144,35 @@ a {
 
 .header-actions {
   display: flex;
+  align-items: center;
   gap: 10px;
+}
+
+.auth-status {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.7);
+  font-size: 12px;
+  color: var(--slate);
+}
+
+.auth-user {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.auth-name {
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.auth-email {
+  font-size: 11px;
 }
 
 .btn {
