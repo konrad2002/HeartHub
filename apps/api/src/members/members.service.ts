@@ -1,8 +1,9 @@
-import { ForbiddenException, NotFoundException } from '@nestjs/common';
+import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { randomUUID } from 'crypto';
 import { ProjectsService } from '../projects/projects.service';
 import { PrismaService } from '../prisma/prisma.service';
 
+@Injectable()
 export class MembersService {
   constructor(
     private readonly prisma: PrismaService,
