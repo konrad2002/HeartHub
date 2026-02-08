@@ -1,6 +1,5 @@
 import { ForbiddenException, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { MemberRole } from '@prisma/client';
 
 export class ProjectsService {
   constructor(private readonly prisma: PrismaService) {}
@@ -66,7 +65,7 @@ export class ProjectsService {
 
   async requireAdmin(projectId: string, userId: string) {
     const member = await this.requireMember(projectId, userId);
-    if (member.role !== MemberRole.admin) {
+    if (member.role !== 'admin') {
       throw new ForbiddenException('Admin role required');
     }
     return member;
