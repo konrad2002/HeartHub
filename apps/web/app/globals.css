@@ -205,6 +205,86 @@ a {
   gap: 24px;
 }
 
+.section-title {
+  margin: 6px 0 0;
+  font-size: 24px;
+  font-family: var(--font-serif), serif;
+}
+
+.projects {
+  display: grid;
+  gap: 20px;
+}
+
+.projects-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.projects-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 18px;
+}
+
+.project-card {
+  min-height: 180px;
+}
+
+.project-form {
+  gap: 16px;
+}
+
+.form-grid {
+  display: grid;
+  gap: 14px;
+}
+
+.field {
+  display: grid;
+  gap: 6px;
+}
+
+.field-label {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--slate);
+}
+
+.field-input {
+  border-radius: 16px;
+  border: 1px solid var(--border);
+  padding: 10px 12px;
+  font-size: 14px;
+  font-family: var(--font-sans), sans-serif;
+  background: rgba(255, 255, 255, 0.9);
+  color: var(--ink);
+}
+
+.field-input:focus {
+  outline: 2px solid rgba(217, 108, 59, 0.25);
+  border-color: rgba(217, 108, 59, 0.4);
+}
+
+.field-textarea {
+  resize: vertical;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.form-error {
+  margin: 0;
+  color: #b02b2b;
+  font-size: 13px;
+}
+
 .hero-card {
   background: linear-gradient(120deg, #fff2df 0%, #fff9f0 60%, #f6e3d5 100%);
   border: 1px solid var(--border);

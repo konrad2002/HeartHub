@@ -1,4 +1,5 @@
 import type {Metadata} from "next";
+import Link from "next/link";
 import {Fraunces, Space_Grotesk} from "next/font/google";
 import {AuthStatus} from "./auth-status";
 import {Providers} from "./providers";
@@ -35,12 +36,12 @@ export default function RootLayout({
                         <span className="brand-title">HeartHub</span>
                     </div>
                     <nav className="nav-group">
-                        <a className="nav-item active" href="#">
+                        <Link className="nav-item active" href="/">
                             Dashboard
-                        </a>
-                        <a className="nav-item" href="#">
+                        </Link>
+                        <Link className="nav-item" href="/projects">
                             Projects
-                        </a>
+                        </Link>
                         <a className="nav-item" href="#">
                             Notes
                         </a>
