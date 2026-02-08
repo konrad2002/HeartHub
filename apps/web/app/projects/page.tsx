@@ -22,6 +22,10 @@ export default function ProjectsPage() {
   const [creating, setCreating] = useState(false);
   const [createError, setCreateError] = useState<string | null>(null);
   const [formData, setFormData] = useState({ name: "", description: "" });
+  const [joinCode, setJoinCode] = useState("");
+  const [joinError, setJoinError] = useState<string | null>(null);
+  const [joining, setJoining] = useState(false);
+  const [inviteCodes, setInviteCodes] = useState<Record<string, string>>({});
 
   const apiBaseUrl = useMemo(
     () => process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:3001",
@@ -167,6 +171,77 @@ export default function ProjectsPage() {
         </div>
       ) : null}
 
+      <div className="card project-form">
+        <div className="card-header">
+          <h3>Join with invite code</h3>
+          <span className="badge">Code</span>
+        </div>
+        <div className="form-grid">
+          <label className="field">
+            <span className="field-label">Invite code</span>
+            <input
+              className="field-input"
+              value={joinCode}
+              onChange={(event) => setJoinCode(event.target.value.toUpperCase())}
+              placeholder="ABCD1234"
+            />
+          </label>
+        </div>
+        {joinError ? <p className="form-error">{joinError}</p> : null}
+        <div className="form-actions">
+          <button
+            className="btn primary"
+            onClick={async () => {
+              if (!joinCode.trim()) {
+                setJoinError("Invite code is required.");
+                return;
+              }
+              setJoining(true);
+              setJoinError(null);
+              try {
+                const response = await fetch(`${apiBaseUrl}/invites/accept`, {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${session?.accessToken ?? ""}`,
+                  },
+                  body: JSON.stringify({ code: joinCode.trim() }),
+                });
+
+                if (!response.ok) {
+                  throw new Error("Failed to accept invite");
+                }
+
+                setJoinCode("");
+                setJoinError(null);
+                // Refresh projects list
+                const refreshed = await fetch(`${apiBaseUrl}/projects`, {
+                  headers: {
+                    Authorization: `Bearer ${session?.accessToken ?? ""}`,
+                  },
+                });
+                if (refreshed.ok) {
+                  const data = (await refreshed.json()) as Project[];
+                  setProjects(data);
+                  if (!currentProject.id && data.length > 0) {
+                    setCurrentProject({ id: data[0].id, name: data[0].name });
+                  }
+                }
+              } catch (joinFailure) {
+                setJoinError(
+                  joinFailure instanceof Error ? joinFailure.message : "Unknown error",
+                );
+              } finally {
+                setJoining(false);
+              }
+            }}
+            disabled={joining || status !== "authenticated"}
+          >
+            {joining ? "Joining..." : "Join project"}
+          </button>
+        </div>
+      </div>
+
       {status === "loading" ? <p>Checking session...</p> : null}
 
       {status === "unauthenticated" ? (
@@ -217,7 +292,41 @@ export default function ProjectsPage() {
                   >
                     Open notes
                   </Link>
+                  <button
+                    className="chip"
+                    onClick={async () => {
+                      try {
+                        const response = await fetch(
+                          `${apiBaseUrl}/projects/${project.id}/invites`,
+                          {
+                            method: "POST",
+                            headers: {
+                              Authorization: `Bearer ${session?.accessToken ?? ""}`,
+                            },
+                          },
+                        );
+
+                        if (!response.ok) {
+                          throw new Error("Failed to create invite");
+                        }
+
+                        const invite = (await response.json()) as { code: string };
+                        setInviteCodes((prev) => ({ ...prev, [project.id]: invite.code }));
+                      } catch (inviteError) {
+                        setError(
+                          inviteError instanceof Error
+                            ? inviteError.message
+                            : "Unknown error",
+                        );
+                      }
+                    }}
+                  >
+                    Get invite code
+                  </button>
                 </div>
+                {inviteCodes[project.id] ? (
+                  <p className="card-meta">Invite code: {inviteCodes[project.id]}</p>
+                ) : null}
                 {project.createdAt ? (
                   <p className="card-meta">
                     Created {new Date(project.createdAt).toLocaleDateString()}

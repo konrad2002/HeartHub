@@ -346,6 +346,11 @@ a {
   gap: 8px;
 }
 
+.project-actions + .card-meta {
+  font-weight: 600;
+  color: var(--ink);
+}
+
 .project-form {
   gap: 16px;
 }

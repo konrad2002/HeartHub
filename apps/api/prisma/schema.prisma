@@ -72,8 +72,7 @@ model ProjectMember {
 model ProjectInvite {
   id        String       @id @default(cuid())
   projectId String
-  email     String
-  token     String       @unique
+  code      String       @unique
   status    InviteStatus @default(pending)
   createdAt DateTime     @default(now())
   updatedAt DateTime     @updatedAt

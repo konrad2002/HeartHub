@@ -15,30 +15,8 @@ export class MembersController {
   }
 
   @Post('invites')
-  invite(
-    @Param('projectId') projectId: string,
-    @CurrentUser() user: RequestUser,
-    @Body() body: { email: string },
-  ) {
-    return this.membersService.invite(projectId, user.id, body.email);
-  }
-
-  @Post('invites/:inviteId/accept')
-  accept(
-    @Param('projectId') projectId: string,
-    @Param('inviteId') inviteId: string,
-    @CurrentUser() user: RequestUser,
-  ) {
-    return this.membersService.acceptInvite(projectId, inviteId, user.id, user.email);
-  }
-
-  @Post('invites/:inviteId/decline')
-  decline(
-    @Param('projectId') projectId: string,
-    @Param('inviteId') inviteId: string,
-    @CurrentUser() user: RequestUser,
-  ) {
-    return this.membersService.declineInvite(projectId, inviteId, user.email);
+  invite(@Param('projectId') projectId: string, @CurrentUser() user: RequestUser) {
+    return this.membersService.invite(projectId, user.id);
   }
 
   @Delete('members/:memberId')

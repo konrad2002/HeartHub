@@ -1,7 +1,19 @@
 import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
-import { randomUUID } from 'crypto';
+import { randomBytes } from 'crypto';
 import { ProjectsService } from '../projects/projects.service';
 import { PrismaService } from '../prisma/prisma.service';
+
+const INVITE_CODE_LENGTH = 8;
+const INVITE_CODE_CHARS = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+
+const generateInviteCode = () => {
+  const bytes = randomBytes(INVITE_CODE_LENGTH);
+  let code = '';
+  for (let i = 0; i < INVITE_CODE_LENGTH; i += 1) {
+    code += INVITE_CODE_CHARS[bytes[i] % INVITE_CODE_CHARS.length];
+  }
+  return code;
+};
 
 @Injectable()
 export class MembersService {
@@ -19,55 +31,49 @@ export class MembersService {
     });
   }
 
-  async invite(projectId: string, userId: string, email: string) {
+  async invite(projectId: string, userId: string) {
     await this.projectsService.requireAdmin(projectId, userId);
+    const code = generateInviteCode();
     return this.prisma.projectInvite.create({
       data: {
         projectId,
-        email: email.toLowerCase(),
-        token: randomUUID(),
+        code,
       },
     });
   }
 
-  async acceptInvite(projectId: string, inviteId: string, userId: string, email: string) {
+  async acceptInvite(code: string, userId: string) {
     const invite = await this.prisma.projectInvite.findFirst({
-      where: { id: inviteId, projectId },
+      where: { code, status: 'pending' },
     });
     if (!invite || invite.status !== 'pending') {
       throw new NotFoundException('Invite not found');
     }
-    if (invite.email !== email.toLowerCase()) {
-      throw new ForbiddenException('Invite email mismatch');
-    }
 
     return this.prisma.$transaction(async (tx) => {
       await tx.projectMember.upsert({
-        where: { projectId_userId: { projectId, userId } },
+        where: { projectId_userId: { projectId: invite.projectId, userId } },
         update: {},
-        create: { projectId, userId, role: 'member' },
+        create: { projectId: invite.projectId, userId, role: 'member' },
       });
 
       return tx.projectInvite.update({
-        where: { id: inviteId },
+        where: { id: invite.id },
         data: { status: 'accepted' },
       });
     });
   }
 
-  async declineInvite(projectId: string, inviteId: string, email: string) {
+  async declineInvite(code: string) {
     const invite = await this.prisma.projectInvite.findFirst({
-      where: { id: inviteId, projectId },
+      where: { code, status: 'pending' },
     });
     if (!invite || invite.status !== 'pending') {
       throw new NotFoundException('Invite not found');
     }
-    if (invite.email !== email.toLowerCase()) {
-      throw new ForbiddenException('Invite email mismatch');
-    }
 
     return this.prisma.projectInvite.update({
-      where: { id: inviteId },
+      where: { id: invite.id },
       data: { status: 'declined' },
     });
   }

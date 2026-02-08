@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { AuthModule } from './auth/auth.module';
 import { HealthModule } from './health/health.module';
+import { InvitesModule } from './invites/invites.module';
 import { LocationsVisitedModule } from './locations-visited/locations-visited.module';
 import { LocationsWishlistModule } from './locations-wishlist/locations-wishlist.module';
 import { MembersModule } from './members/members.module';
@@ -16,6 +17,7 @@ import { UsersModule } from './users/users.module';
     PrismaModule,
     AuthModule,
     HealthModule,
+    InvitesModule,
     UsersModule,
     ProjectsModule,
     MembersModule,
