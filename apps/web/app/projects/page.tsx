@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { useSession } from "next-auth/react";
+import { useCurrentProject } from "../current-project-context";
 
 type Project = {
   id: string;
@@ -13,6 +14,7 @@ type Project = {
 
 export default function ProjectsPage() {
   const { data: session, status } = useSession();
+  const { currentProject, setCurrentProject } = useCurrentProject();
   const [projects, setProjects] = useState<Project[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
@@ -27,11 +29,7 @@ export default function ProjectsPage() {
   );
 
   const rememberProject = (id: string, name: string) => {
-    if (typeof window === "undefined") {
-      return;
-    }
-    window.localStorage.setItem("currentProjectId", id);
-    window.localStorage.setItem("currentProjectName", name);
+    setCurrentProject({ id, name });
   };
 
   useEffect(() => {
@@ -55,6 +53,9 @@ export default function ProjectsPage() {
 
         const data = (await response.json()) as Project[];
         setProjects(data);
+        if (!currentProject.id && data.length === 1) {
+          setCurrentProject({ id: data[0].id, name: data[0].name });
+        }
       } catch (fetchError) {
         setError(fetchError instanceof Error ? fetchError.message : "Unknown error");
       } finally {
@@ -63,7 +64,7 @@ export default function ProjectsPage() {
     };
 
     fetchProjects();
-  }, [apiBaseUrl, session?.accessToken, status]);
+  }, [apiBaseUrl, currentProject.id, session?.accessToken, setCurrentProject, status]);
 
   return (
     <div className="projects">

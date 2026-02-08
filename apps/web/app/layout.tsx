@@ -1,7 +1,7 @@
 import type {Metadata} from "next";
 import {Fraunces, Space_Grotesk} from "next/font/google";
 import {AuthStatus} from "./auth-status";
-import {CurrentProjectBadge} from "./current-project";
+import {ProjectSelector} from "./project-selector";
 import {AppNav} from "./nav";
 import {Providers} from "./providers";
 import "./globals.css";
@@ -46,10 +46,9 @@ export default function RootLayout({
                 </aside>
                 <div className="app-main">
                     <header className="app-header">
-                        <CurrentProjectBadge />
+                        <ProjectSelector />
                         <div className="header-actions">
                             <button className="btn ghost">Invite</button>
-                            <button className="btn primary">New project</button>
                             <AuthStatus />
                         </div>
                     </header>

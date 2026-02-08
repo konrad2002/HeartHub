@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useSession } from "next-auth/react";
 import { useParams } from "next/navigation";
+import { useCurrentProject } from "../../../current-project-context";
 
 type Note = {
   id: string;
@@ -15,6 +16,7 @@ type Note = {
 export default function ProjectNotesPage() {
   const { projectId } = useParams<{ projectId: string }>();
   const { data: session, status } = useSession();
+  const { currentProject, setCurrentProject } = useCurrentProject();
   const [notes, setNotes] = useState<Note[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -33,15 +35,31 @@ export default function ProjectNotesPage() {
       return;
     }
 
+    if (projectId && projectId !== currentProject.id) {
+      setCurrentProject({ id: projectId, name: currentProject.name });
+    }
+
+    if (!projectId && !currentProject.id) {
+      return;
+    }
+
+    const activeProjectId = projectId ?? currentProject.id;
+    if (!activeProjectId) {
+      return;
+    }
+
     const loadNotes = async () => {
       setLoading(true);
       setError(null);
       try {
-        const response = await fetch(`${apiBaseUrl}/projects/${projectId}/notes`, {
+        const response = await fetch(
+          `${apiBaseUrl}/projects/${activeProjectId}/notes`,
+          {
           headers: {
             Authorization: `Bearer ${session?.accessToken ?? ""}`,
           },
-        });
+          },
+        );
 
         if (!response.ok) {
           throw new Error("Failed to load notes");
@@ -57,7 +75,15 @@ export default function ProjectNotesPage() {
     };
 
     loadNotes();
-  }, [apiBaseUrl, projectId, session?.accessToken, status]);
+  }, [
+    apiBaseUrl,
+    currentProject.id,
+    currentProject.name,
+    projectId,
+    session?.accessToken,
+    setCurrentProject,
+    status,
+  ]);
 
   const handleCreate = async () => {
     if (!formData.title.trim() || !formData.body.trim()) {
@@ -68,7 +94,11 @@ export default function ProjectNotesPage() {
     setCreating(true);
     setError(null);
     try {
-      const response = await fetch(`${apiBaseUrl}/projects/${projectId}/notes`, {
+      const activeProjectId = projectId ?? currentProject.id;
+      if (!activeProjectId) {
+        throw new Error("Select a project first");
+      }
+      const response = await fetch(`${apiBaseUrl}/projects/${activeProjectId}/notes`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -98,8 +128,12 @@ export default function ProjectNotesPage() {
   const handleDelete = async (noteId: string) => {
     setError(null);
     try {
+      const activeProjectId = projectId ?? currentProject.id;
+      if (!activeProjectId) {
+        throw new Error("Select a project first");
+      }
       const response = await fetch(
-        `${apiBaseUrl}/projects/${projectId}/notes/${noteId}`,
+        `${apiBaseUrl}/projects/${activeProjectId}/notes/${noteId}`,
         {
           method: "DELETE",
           headers: {
@@ -130,8 +164,12 @@ export default function ProjectNotesPage() {
 
     setError(null);
     try {
+      const activeProjectId = projectId ?? currentProject.id;
+      if (!activeProjectId) {
+        throw new Error("Select a project first");
+      }
       const response = await fetch(
-        `${apiBaseUrl}/projects/${projectId}/notes/${editingId}`,
+        `${apiBaseUrl}/projects/${activeProjectId}/notes/${editingId}`,
         {
           method: "PATCH",
           headers: {

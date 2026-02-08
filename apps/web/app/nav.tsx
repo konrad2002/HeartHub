@@ -1,29 +1,19 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useCurrentProject } from "./current-project-context";
 
 export function AppNav() {
-  const [currentProjectId, setCurrentProjectId] = useState<string | null>(null);
-
-  useEffect(() => {
-    const stored = window.localStorage.getItem("currentProjectId");
-    if (stored) {
-      setCurrentProjectId(stored);
-    }
-  }, []);
+  const { currentProject } = useCurrentProject();
 
   return (
     <nav className="nav-group">
       <Link className="nav-item active" href="/">
         Dashboard
       </Link>
-      <Link className="nav-item" href="/projects">
-        Projects
-      </Link>
       <Link
         className="nav-item"
-        href={currentProjectId ? `/projects/${currentProjectId}/notes` : "/projects"}
+        href={currentProject.id ? `/projects/${currentProject.id}/notes` : "/projects"}
       >
         Notes
       </Link>
