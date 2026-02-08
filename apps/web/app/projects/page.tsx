@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { useSession } from "next-auth/react";
 
@@ -24,6 +25,14 @@ export default function ProjectsPage() {
     () => process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:3001",
     [],
   );
+
+  const rememberProject = (id: string, name: string) => {
+    if (typeof window === "undefined") {
+      return;
+    }
+    window.localStorage.setItem("currentProjectId", id);
+    window.localStorage.setItem("currentProjectName", name);
+  };
 
   useEffect(() => {
     if (status !== "authenticated") {
@@ -193,6 +202,21 @@ export default function ProjectsPage() {
                 <p className="card-body">
                   {project.description || "No description yet."}
                 </p>
+                <div className="project-actions">
+                  <button
+                    className="chip"
+                    onClick={() => rememberProject(project.id, project.name)}
+                  >
+                    Set current
+                  </button>
+                  <Link
+                    className="chip"
+                    href={`/projects/${project.id}/notes`}
+                    onClick={() => rememberProject(project.id, project.name)}
+                  >
+                    Open notes
+                  </Link>
+                </div>
                 {project.createdAt ? (
                   <p className="card-meta">
                     Created {new Date(project.createdAt).toLocaleDateString()}

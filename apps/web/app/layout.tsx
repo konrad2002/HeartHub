@@ -1,7 +1,8 @@
 import type {Metadata} from "next";
-import Link from "next/link";
 import {Fraunces, Space_Grotesk} from "next/font/google";
 import {AuthStatus} from "./auth-status";
+import {CurrentProjectBadge} from "./current-project";
+import {AppNav} from "./nav";
 import {Providers} from "./providers";
 import "./globals.css";
 
@@ -35,26 +36,7 @@ export default function RootLayout({
                         <span className="brand-dot"/>
                         <span className="brand-title">HeartHub</span>
                     </div>
-                    <nav className="nav-group">
-                        <Link className="nav-item active" href="/">
-                            Dashboard
-                        </Link>
-                        <Link className="nav-item" href="/projects">
-                            Projects
-                        </Link>
-                        <a className="nav-item" href="#">
-                            Notes
-                        </a>
-                        <a className="nav-item" href="#">
-                            Trainings
-                        </a>
-                        <a className="nav-item" href="#">
-                            Locations
-                        </a>
-                        <a className="nav-item" href="#">
-                            Members
-                        </a>
-                    </nav>
+                    <AppNav />
                     <div className="sidebar-card">
                         <p className="sidebar-title">Quick add</p>
                         <button className="chip">Note</button>
@@ -64,10 +46,7 @@ export default function RootLayout({
                 </aside>
                 <div className="app-main">
                     <header className="app-header">
-                        <div>
-                            <p className="eyebrow">Current project</p>
-                            <h1 className="header-title">Konrad + Lia</h1>
-                        </div>
+                        <CurrentProjectBadge />
                         <div className="header-actions">
                             <button className="btn ghost">Invite</button>
                             <button className="btn primary">New project</button>

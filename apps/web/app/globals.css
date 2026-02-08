@@ -233,6 +233,12 @@ a {
   min-height: 180px;
 }
 
+.project-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
 .project-form {
   gap: 16px;
 }
@@ -283,6 +289,45 @@ a {
   margin: 0;
   color: #b02b2b;
   font-size: 13px;
+}
+
+.notes-page {
+  display: grid;
+  gap: 20px;
+}
+
+.note-form {
+  gap: 16px;
+}
+
+.notes-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 18px;
+}
+
+.note-card {
+  gap: 12px;
+}
+
+.note-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.note-edit {
+  display: grid;
+  gap: 12px;
+  border-top: 1px dashed var(--border);
+  padding-top: 12px;
+}
+
+.note-toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: var(--slate);
 }
 
 .hero-card {
