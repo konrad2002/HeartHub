@@ -20,6 +20,7 @@ export class TrainingsController {
     @CurrentUser() user: RequestUser,
     @Body()
     body: {
+      title: string;
       date: string;
       duration: number;
       type: string;
@@ -47,6 +48,7 @@ export class TrainingsController {
     @CurrentUser() user: RequestUser,
     @Body()
     body: {
+      title?: string;
       date?: string;
       duration?: number;
       type?: string;

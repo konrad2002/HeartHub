@@ -119,6 +119,7 @@ model Training {
   id        String   @id @default(cuid())
   projectId String
   authorId  String
+  title     String
   date      DateTime
   duration  Int
   type      String

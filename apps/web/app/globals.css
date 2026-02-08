@@ -442,6 +442,40 @@ a {
   color: var(--slate);
 }
 
+.trainings-page {
+  display: grid;
+  gap: 20px;
+}
+
+.training-form {
+  gap: 16px;
+}
+
+.trainings-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 18px;
+}
+
+.training-card {
+  gap: 12px;
+}
+
+.tag-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.tag-pill {
+  font-size: 11px;
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: #f4e5d6;
+  color: #a35a37;
+  font-weight: 600;
+}
+
 .hero-card {
   background: linear-gradient(120deg, #fff2df 0%, #fff9f0 60%, #f6e3d5 100%);
   border: 1px solid var(--border);

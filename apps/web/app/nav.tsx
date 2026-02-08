@@ -17,9 +17,12 @@ export function AppNav() {
       >
         Notes
       </Link>
-      <a className="nav-item" href="#">
+      <Link
+        className="nav-item"
+        href={currentProject.id ? `/projects/${currentProject.id}/trainings` : "/projects"}
+      >
         Trainings
-      </a>
+      </Link>
       <a className="nav-item" href="#">
         Locations
       </a>

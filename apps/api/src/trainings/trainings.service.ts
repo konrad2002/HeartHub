@@ -21,6 +21,7 @@ export class TrainingsService {
     projectId: string,
     userId: string,
     data: {
+      title: string;
       date: string;
       duration: number;
       type: string;
@@ -34,6 +35,7 @@ export class TrainingsService {
       data: {
         projectId,
         authorId: userId,
+        title: data.title,
         date: new Date(data.date),
         duration: data.duration,
         type: data.type,
@@ -60,6 +62,7 @@ export class TrainingsService {
     userId: string,
     trainingId: string,
     data: {
+      title?: string;
       date?: string;
       duration?: number;
       type?: string;
@@ -73,6 +76,7 @@ export class TrainingsService {
     return this.prisma.training.update({
       where: { id: trainingId },
       data: {
+        title: data.title,
         date: data.date ? new Date(data.date) : undefined,
         duration: data.duration,
         type: data.type,
