@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Query, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '../auth/auth.guard';
 import { CurrentUser } from '../auth/current-user.decorator';
 import type { RequestUser } from '../auth/user-context';
@@ -10,8 +10,12 @@ export class TrainingsController {
   constructor(private readonly trainingsService: TrainingsService) {}
 
   @Get()
-  list(@Param('projectId') projectId: string, @CurrentUser() user: RequestUser) {
-    return this.trainingsService.list(projectId, user.id);
+  list(
+    @Param('projectId') projectId: string,
+    @CurrentUser() user: RequestUser,
+    @Query('authorId') authorId?: string,
+  ) {
+    return this.trainingsService.list(projectId, user.id, authorId);
   }
 
   @Post()

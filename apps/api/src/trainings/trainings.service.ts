@@ -9,10 +9,13 @@ export class TrainingsService {
     private readonly projectsService: ProjectsService,
   ) {}
 
-  async list(projectId: string, userId: string) {
+  async list(projectId: string, userId: string, authorId?: string) {
     await this.projectsService.requireMember(projectId, userId);
     return this.prisma.training.findMany({
-      where: { projectId },
+      where: { projectId, authorId: authorId || undefined },
+      include: {
+        author: { select: { id: true, name: true, email: true } },
+      },
       orderBy: { date: 'desc' },
     });
   }

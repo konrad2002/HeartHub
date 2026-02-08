@@ -461,6 +461,12 @@ a {
   gap: 12px;
 }
 
+.filter-control {
+  display: grid;
+  gap: 6px;
+  min-width: 180px;
+}
+
 .tag-row {
   display: flex;
   flex-wrap: wrap;
