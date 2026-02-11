@@ -45,7 +45,7 @@ COPY package.json package-lock.json* ./
 RUN npm ci --only=production && npm cache clean --force
 
 # Copy built application from builder
-COPY --from=builder /app/public ./public
+COPY --from=builder --chown=nextjs:nodejs /app/public ./public
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 
