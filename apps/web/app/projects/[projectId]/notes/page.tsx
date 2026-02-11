@@ -20,6 +20,7 @@ export default function ProjectNotesPage() {
   const [notes, setNotes] = useState<Note[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [showForm, setShowForm] = useState(false);
   const [formData, setFormData] = useState({ title: "", body: "" });
   const [creating, setCreating] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -203,42 +204,47 @@ export default function ProjectNotesPage() {
           <p className="eyebrow">Project notes</p>
           <h2 className="section-title">Notes</h2>
         </div>
-      </div>
-
-      <div className="card note-form">
-        <div className="card-header">
-          <h3>Add a note</h3>
-          <span className="badge">Shared</span>
-        </div>
-        <div className="form-grid">
-          <label className="field">
-            <span className="field-label">Title</span>
-            <input
-              className="field-input"
-              value={formData.title}
-              onChange={(event) =>
-                setFormData((prev) => ({ ...prev, title: event.target.value }))
-              }
-              placeholder="Weekend plan"
-            />
-          </label>
-          <label className="field">
-            <span className="field-label">Body</span>
-            <textarea
-              className="field-input field-textarea"
-              value={formData.body}
-              onChange={(event) =>
-                setFormData((prev) => ({ ...prev, body: event.target.value }))
-              }
-              placeholder="Remember to book the cabin before Friday."
-              rows={4}
-            />
-          </label>
-        </div>
-        <button className="btn primary" onClick={handleCreate} disabled={creating}>
-          {creating ? "Saving..." : "Save note"}
+        <button className="btn primary" onClick={() => setShowForm((prev) => !prev)}>
+          {showForm ? "Close" : "Add note"}
         </button>
       </div>
+
+      {showForm ? (
+        <div className="card note-form">
+          <div className="card-header">
+            <h3>Add a note</h3>
+            <span className="badge">Shared</span>
+          </div>
+          <div className="form-grid">
+            <label className="field">
+              <span className="field-label">Title</span>
+              <input
+                className="field-input"
+                value={formData.title}
+                onChange={(event) =>
+                  setFormData((prev) => ({ ...prev, title: event.target.value }))
+                }
+                placeholder="Weekend plan"
+              />
+            </label>
+            <label className="field">
+              <span className="field-label">Body</span>
+              <textarea
+                className="field-input field-textarea"
+                value={formData.body}
+                onChange={(event) =>
+                  setFormData((prev) => ({ ...prev, body: event.target.value }))
+                }
+                placeholder="Remember to book the cabin before Friday."
+                rows={4}
+              />
+            </label>
+          </div>
+          <button className="btn primary" onClick={handleCreate} disabled={creating}>
+            {creating ? "Saving..." : "Save note"}
+          </button>
+        </div>
+      ) : null}
 
       {status === "loading" ? <p>Checking session...</p> : null}
       {status === "unauthenticated" ? (

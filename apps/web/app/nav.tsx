@@ -33,9 +33,12 @@ export function AppNav() {
       <a className="nav-item" href="#">
         Locations
       </a>
-      <a className="nav-item" href="#">
+      <Link
+        className={`nav-item${isActive(`/projects/${currentProject.id}/members`) ? " active" : ""}`}
+        href={currentProject.id ? `/projects/${currentProject.id}/members` : "/projects"}
+      >
         Members
-      </a>
+      </Link>
     </nav>
   );
 }

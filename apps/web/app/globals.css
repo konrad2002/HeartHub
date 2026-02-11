@@ -482,6 +482,32 @@ a {
   font-weight: 600;
 }
 
+.members-page {
+  display: grid;
+  gap: 20px;
+}
+
+.members-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 18px;
+}
+
+.member-card {
+  gap: 12px;
+}
+
+.member-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.member-role {
+  min-width: 120px;
+  padding: 6px 10px;
+  font-size: 13px;
+}
+
 .hero-card {
   background: linear-gradient(120deg, #fff2df 0%, #fff9f0 60%, #f6e3d5 100%);
   border: 1px solid var(--border);

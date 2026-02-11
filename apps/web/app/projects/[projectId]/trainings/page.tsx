@@ -41,6 +41,7 @@ export default function TrainingsPage() {
   const [trainings, setTrainings] = useState<Training[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [showForm, setShowForm] = useState(false);
   const [creating, setCreating] = useState(false);
   const [members, setMembers] = useState<Member[]>([]);
   const [selectedAuthorId, setSelectedAuthorId] = useState<string>("all");
@@ -315,104 +316,109 @@ export default function TrainingsPage() {
             ))}
           </select>
         </label>
-      </div>
-
-      <div className="card training-form">
-        <div className="card-header">
-          <h3>Add a training</h3>
-          <span className="badge">Shared</span>
-        </div>
-        <div className="form-grid">
-          <label className="field">
-            <span className="field-label">Title</span>
-            <input
-              className="field-input"
-              value={formData.title}
-              onChange={(event) =>
-                setFormData((prev) => ({ ...prev, title: event.target.value }))
-              }
-              placeholder="Morning swim"
-            />
-          </label>
-          <label className="field">
-            <span className="field-label">Activity</span>
-            <select
-              className="field-input"
-              value={formData.type}
-              onChange={(event) =>
-                setFormData((prev) => ({ ...prev, type: event.target.value }))
-              }
-            >
-              {activityOptions.map((option) => (
-                <option key={option} value={option}>
-                  {option}
-                </option>
-              ))}
-            </select>
-          </label>
-          <label className="field">
-            <span className="field-label">Duration (min)</span>
-            <input
-              className="field-input"
-              type="number"
-              min={0}
-              value={formData.duration}
-              onChange={(event) =>
-                setFormData((prev) => ({ ...prev, duration: event.target.value }))
-              }
-            />
-          </label>
-          <label className="field">
-            <span className="field-label">Date</span>
-            <input
-              className="field-input"
-              type="date"
-              value={formData.date}
-              onChange={(event) =>
-                setFormData((prev) => ({ ...prev, date: event.target.value }))
-              }
-            />
-          </label>
-          <label className="field">
-            <span className="field-label">Intensity (1-10)</span>
-            <input
-              className="field-input"
-              type="number"
-              min={1}
-              max={10}
-              value={formData.intensity}
-              onChange={(event) =>
-                setFormData((prev) => ({ ...prev, intensity: event.target.value }))
-              }
-            />
-          </label>
-          <label className="field">
-            <span className="field-label">Tags</span>
-            <input
-              className="field-input"
-              value={formData.tags}
-              onChange={(event) =>
-                setFormData((prev) => ({ ...prev, tags: event.target.value }))
-              }
-              placeholder="cardio, morning"
-            />
-          </label>
-          <label className="field">
-            <span className="field-label">Notes</span>
-            <textarea
-              className="field-input field-textarea"
-              value={formData.notes}
-              onChange={(event) =>
-                setFormData((prev) => ({ ...prev, notes: event.target.value }))
-              }
-              rows={3}
-            />
-          </label>
-        </div>
-        <button className="btn primary" onClick={handleCreate} disabled={creating}>
-          {creating ? "Saving..." : "Save training"}
+        <button className="btn primary" onClick={() => setShowForm((prev) => !prev)}>
+          {showForm ? "Close" : "Add training"}
         </button>
       </div>
+
+      {showForm ? (
+        <div className="card training-form">
+          <div className="card-header">
+            <h3>Add a training</h3>
+            <span className="badge">Shared</span>
+          </div>
+          <div className="form-grid">
+            <label className="field">
+              <span className="field-label">Title</span>
+              <input
+                className="field-input"
+                value={formData.title}
+                onChange={(event) =>
+                  setFormData((prev) => ({ ...prev, title: event.target.value }))
+                }
+                placeholder="Morning swim"
+              />
+            </label>
+            <label className="field">
+              <span className="field-label">Activity</span>
+              <select
+                className="field-input"
+                value={formData.type}
+                onChange={(event) =>
+                  setFormData((prev) => ({ ...prev, type: event.target.value }))
+                }
+              >
+                {activityOptions.map((option) => (
+                  <option key={option} value={option}>
+                    {option}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <label className="field">
+              <span className="field-label">Duration (min)</span>
+              <input
+                className="field-input"
+                type="number"
+                min={0}
+                value={formData.duration}
+                onChange={(event) =>
+                  setFormData((prev) => ({ ...prev, duration: event.target.value }))
+                }
+              />
+            </label>
+            <label className="field">
+              <span className="field-label">Date</span>
+              <input
+                className="field-input"
+                type="date"
+                value={formData.date}
+                onChange={(event) =>
+                  setFormData((prev) => ({ ...prev, date: event.target.value }))
+                }
+              />
+            </label>
+            <label className="field">
+              <span className="field-label">Intensity (1-10)</span>
+              <input
+                className="field-input"
+                type="number"
+                min={1}
+                max={10}
+                value={formData.intensity}
+                onChange={(event) =>
+                  setFormData((prev) => ({ ...prev, intensity: event.target.value }))
+                }
+              />
+            </label>
+            <label className="field">
+              <span className="field-label">Tags</span>
+              <input
+                className="field-input"
+                value={formData.tags}
+                onChange={(event) =>
+                  setFormData((prev) => ({ ...prev, tags: event.target.value }))
+                }
+                placeholder="cardio, morning"
+              />
+            </label>
+            <label className="field">
+              <span className="field-label">Notes</span>
+              <textarea
+                className="field-input field-textarea"
+                value={formData.notes}
+                onChange={(event) =>
+                  setFormData((prev) => ({ ...prev, notes: event.target.value }))
+                }
+                rows={3}
+              />
+            </label>
+          </div>
+          <button className="btn primary" onClick={handleCreate} disabled={creating}>
+            {creating ? "Saving..." : "Save training"}
+          </button>
+        </div>
+      ) : null}
 
       {status === "loading" ? <p>Checking session...</p> : null}
       {status === "unauthenticated" ? (
