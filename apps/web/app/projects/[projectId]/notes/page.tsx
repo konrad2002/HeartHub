@@ -3,8 +3,8 @@
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import { useParams, useSearchParams } from "next/navigation";
-import { useCurrentProject } from "../../../current-project-context";
-import { getApiBaseUrl } from "../../../lib/env";
+import { useCurrentProject } from "@/app/current-project-context";
+import { getApiBaseUrl } from "@/lib/env";
 
 type Note = {
   id: string;

@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useSession } from "next-auth/react";
 import { useCurrentProject } from "./current-project-context";
-import { getApiBaseUrl } from "../lib/env";
+import { getApiBaseUrl } from "@/lib/env";
 
 export function InviteButton() {
   const { data: session } = useSession();

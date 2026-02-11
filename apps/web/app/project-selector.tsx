@@ -1,10 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import {useEffect, useMemo, useState} from "react";
 import { useSession } from "next-auth/react";
 import { useCurrentProject } from "./current-project-context";
-import { getApiBaseUrl } from "../lib/env";
 
 type Project = {
   id: string;
