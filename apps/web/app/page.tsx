@@ -1,9 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import { useCurrentProject } from "./current-project-context";
+import { getApiBaseUrl } from "../lib/env";
 
 type Note = {
   id: string;
@@ -27,11 +28,7 @@ export default function Home() {
   const [notes, setNotes] = useState<Note[]>([]);
   const [trainings, setTrainings] = useState<Training[]>([]);
   const [error, setError] = useState<string | null>(null);
-
-  const apiBaseUrl = useMemo(
-    () => process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:3001",
-    [],
-  );
+  const apiBaseUrl = getApiBaseUrl();
 
   useEffect(() => {
     if (status !== "authenticated" || !currentProject.id) {

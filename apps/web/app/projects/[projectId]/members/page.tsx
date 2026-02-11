@@ -1,9 +1,10 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import { useParams } from "next/navigation";
 import { useCurrentProject } from "../../../current-project-context";
+import { getApiBaseUrl } from "../../../lib/env";
 
 type Member = {
   id: string;
@@ -19,11 +20,7 @@ export default function MembersPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [updating, setUpdating] = useState<string | null>(null);
-
-  const apiBaseUrl = useMemo(
-    () => process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:3001",
-    [],
-  );
+  const apiBaseUrl = getApiBaseUrl();
 
   useEffect(() => {
     if (status !== "authenticated") {

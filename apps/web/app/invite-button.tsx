@@ -1,8 +1,9 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { useSession } from "next-auth/react";
 import { useCurrentProject } from "./current-project-context";
+import { getApiBaseUrl } from "../lib/env";
 
 export function InviteButton() {
   const { data: session } = useSession();
@@ -10,11 +11,7 @@ export function InviteButton() {
   const [code, setCode] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
-  const apiBaseUrl = useMemo(
-    () => process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:3001",
-    [],
-  );
+  const apiBaseUrl = getApiBaseUrl();
 
   const handleInvite = async () => {
     if (!currentProject.id) {

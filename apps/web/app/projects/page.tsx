@@ -1,9 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import { useCurrentProject } from "../current-project-context";
+import { getApiBaseUrl } from "../../lib/env";
 
 type Project = {
   id: string;
@@ -26,11 +27,7 @@ export default function ProjectsPage() {
   const [joinError, setJoinError] = useState<string | null>(null);
   const [joining, setJoining] = useState(false);
   const [inviteCodes, setInviteCodes] = useState<Record<string, string>>({});
-
-  const apiBaseUrl = useMemo(
-    () => process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:3001",
-    [],
-  );
+  const apiBaseUrl = getApiBaseUrl();
 
   const rememberProject = (id: string, name: string) => {
     setCurrentProject({ id, name });

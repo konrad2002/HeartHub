@@ -1,9 +1,10 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import { useParams, useSearchParams } from "next/navigation";
 import { useCurrentProject } from "../../../current-project-context";
+import { getApiBaseUrl } from "../../../lib/env";
 
 type Note = {
   id: string;
@@ -26,11 +27,7 @@ export default function ProjectNotesPage() {
   const [creating, setCreating] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editData, setEditData] = useState({ title: "", body: "", pinned: false });
-
-  const apiBaseUrl = useMemo(
-    () => process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:3001",
-    [],
-  );
+  const apiBaseUrl = getApiBaseUrl();
 
   useEffect(() => {
     if (searchParams.get("new") === "1") {

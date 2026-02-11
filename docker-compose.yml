@@ -51,8 +51,8 @@ services:
       KEYCLOAK_CLIENT_SECRET: ${KEYCLOAK_CLIENT_SECRET:-your-secret}
       NEXTAUTH_SECRET: ${NEXTAUTH_SECRET:-your-nextauth-secret}
       NEXTAUTH_URL: ${NEXTAUTH_URL:-http://localhost:3002}
-      # API URL for the web app
-      NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost:3000}
+      # API URL for the web app - injected at runtime, no rebuild needed
+      NEXT_PUBLIC_API_BASE_URL: ${NEXT_PUBLIC_API_BASE_URL:-http://localhost:3000}
     depends_on:
       - api
     restart: unless-stopped

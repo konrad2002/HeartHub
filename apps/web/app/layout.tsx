@@ -30,6 +30,9 @@ export default function RootLayout({
 }>) {
     return (
         <html lang="en">
+        <head>
+            <script src="/env-config.js"></script>
+        </head>
         <body className={`${spaceGrotesk.variable} ${fraunces.variable} antialiased`}>
         <Providers>
             <div className="app-shell">

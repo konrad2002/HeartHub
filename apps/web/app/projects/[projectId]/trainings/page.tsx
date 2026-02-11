@@ -1,9 +1,10 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import { useParams, useSearchParams } from "next/navigation";
 import { useCurrentProject } from "../../../current-project-context";
+import { getApiBaseUrl } from "../../../lib/env";
 
 type Training = {
   id: string;
@@ -65,11 +66,7 @@ export default function TrainingsPage() {
     notes: "",
     tags: "",
   });
-
-  const apiBaseUrl = useMemo(
-    () => process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:3001",
-    [],
-  );
+  const apiBaseUrl = getApiBaseUrl();
 
   useEffect(() => {
     if (searchParams.get("new") === "1") {
