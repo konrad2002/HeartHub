@@ -9,6 +9,23 @@ on:
     branches:
       - master
       - develop
+  workflow_dispatch:
+    inputs:
+      build_api:
+        description: 'Build API image'
+        required: false
+        default: true
+        type: boolean
+      build_web:
+        description: 'Build Web image'
+        required: false
+        default: true
+        type: boolean
+      push_images:
+        description: 'Push images to registry'
+        required: false
+        default: false
+        type: boolean
 
 env:
   REGISTRY: ghcr.io
@@ -19,6 +36,7 @@ jobs:
   # Job to detect which apps have changed
   detect-changes:
     runs-on: ubuntu-latest
+    if: github.event_name != 'workflow_dispatch'
     outputs:
       api: ${{ steps.filter.outputs.api }}
       web: ${{ steps.filter.outputs.web }}
@@ -39,8 +57,11 @@ jobs:
   # Build and push API Docker image
   build-api:
     runs-on: ubuntu-latest
-    needs: detect-changes
-    if: needs.detect-changes.outputs.api == 'true'
+    needs: [detect-changes]
+    if: |
+      always() &&
+      ((github.event_name == 'workflow_dispatch' && inputs.build_api) ||
+       (github.event_name != 'workflow_dispatch' && needs.detect-changes.outputs.api == 'true'))
     permissions:
       contents: read
       packages: write
@@ -74,7 +95,7 @@ jobs:
         with:
           context: ./apps/api
           file: ./apps/api/Dockerfile
-          push: ${{ github.event_name != 'pull_request' }}
+          push: ${{ (github.event_name == 'workflow_dispatch' && inputs.push_images) || (github.event_name != 'pull_request' && github.event_name != 'workflow_dispatch') }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
@@ -85,8 +106,11 @@ jobs:
   # Build and push Web Docker image
   build-web:
     runs-on: ubuntu-latest
-    needs: detect-changes
-    if: needs.detect-changes.outputs.web == 'true'
+    needs: [detect-changes]
+    if: |
+      always() &&
+      ((github.event_name == 'workflow_dispatch' && inputs.build_web) ||
+       (github.event_name != 'workflow_dispatch' && needs.detect-changes.outputs.web == 'true'))
     permissions:
       contents: read
       packages: write
@@ -120,7 +144,7 @@ jobs:
         with:
           context: ./apps/web
           file: ./apps/web/Dockerfile
-          push: ${{ github.event_name != 'pull_request' }}
+          push: ${{ (github.event_name == 'workflow_dispatch' && inputs.push_images) || (github.event_name != 'pull_request' && github.event_name != 'workflow_dispatch') }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha

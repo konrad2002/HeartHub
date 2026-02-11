@@ -86,8 +86,28 @@ docker run -p 3000:3000 \
 ### Triggers
 
 The workflow runs on:
-- Push to `main` or `develop` branches
-- Pull requests targeting `main` or `develop` branches
+- Push to `master` or `develop` branches
+- Pull requests targeting `master` or `develop` branches
+- **Manual trigger** via GitHub Actions UI (workflow_dispatch)
+
+#### Manual Workflow Trigger
+
+You can manually trigger the workflow from the GitHub Actions tab with the following options:
+
+- **Build API image** (default: true): Whether to build the API Docker image
+- **Build Web image** (default: true): Whether to build the Web Docker image  
+- **Push images to registry** (default: false): Whether to push the built images to the registry
+
+This allows you to:
+- Build both images without pushing (useful for testing the build process)
+- Build only specific images
+- Optionally push the images to the registry
+
+To trigger manually:
+1. Go to the "Actions" tab in your GitHub repository
+2. Select "Build and Push Docker Images" workflow
+3. Click "Run workflow"
+4. Select your options and click "Run workflow"
 
 ### Environment Variables
 
