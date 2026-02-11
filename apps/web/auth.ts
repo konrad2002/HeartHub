@@ -68,9 +68,12 @@ export const authOptions: NextAuthOptions = {
   callbacks: {
     async jwt({ token, account }) {
       if (account) {
-        const accessTokenExpires = account.expires_at
-          ? account.expires_at * 1000
-          : Date.now() + (account.expires_in ?? 0) * 1000;
+        let accessTokenExpires: number;
+        if (account.expires_at) {
+          accessTokenExpires = account.expires_at * 1000;
+        } else {
+          accessTokenExpires = Date.now() + (account.expires_in as number ?? 0) * 1000;
+        }
         return {
           ...token,
           accessToken: account.access_token,
