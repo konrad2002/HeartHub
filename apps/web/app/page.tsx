@@ -1,4 +1,78 @@
+"use client";
+
+import Link from "next/link";
+import { useEffect, useMemo, useState } from "react";
+import { useSession } from "next-auth/react";
+import { useCurrentProject } from "./current-project-context";
+
+type Note = {
+  id: string;
+  title: string;
+  body: string;
+  createdAt: string;
+};
+
+type Training = {
+  id: string;
+  title: string;
+  type: string;
+  duration: number;
+  intensity?: number | null;
+  date: string;
+};
+
 export default function Home() {
+  const { data: session, status } = useSession();
+  const { currentProject } = useCurrentProject();
+  const [notes, setNotes] = useState<Note[]>([]);
+  const [trainings, setTrainings] = useState<Training[]>([]);
+  const [error, setError] = useState<string | null>(null);
+
+  const apiBaseUrl = useMemo(
+    () => process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:3001",
+    [],
+  );
+
+  useEffect(() => {
+    if (status !== "authenticated" || !currentProject.id) {
+      return;
+    }
+
+    const loadDashboard = async () => {
+      setError(null);
+      try {
+        const [notesRes, trainingsRes] = await Promise.all([
+          fetch(`${apiBaseUrl}/projects/${currentProject.id}/notes`, {
+            headers: { Authorization: `Bearer ${session?.accessToken ?? ""}` },
+          }),
+          fetch(`${apiBaseUrl}/projects/${currentProject.id}/trainings`, {
+            headers: { Authorization: `Bearer ${session?.accessToken ?? ""}` },
+          }),
+        ]);
+
+        if (notesRes.ok) {
+          const data = (await notesRes.json()) as Note[];
+          setNotes(data.slice(0, 3));
+        }
+        if (trainingsRes.ok) {
+          const data = (await trainingsRes.json()) as Training[];
+          setTrainings(data.slice(0, 3));
+        }
+      } catch (loadError) {
+        setError(loadError instanceof Error ? loadError.message : "Unknown error");
+      }
+    };
+
+    loadDashboard();
+  }, [apiBaseUrl, currentProject.id, session?.accessToken, status]);
+
+  const notesLink = currentProject.id
+    ? `/projects/${currentProject.id}/notes?new=1`
+    : "/projects";
+  const trainingsLink = currentProject.id
+    ? `/projects/${currentProject.id}/trainings?new=1`
+    : "/projects";
+
   return (
     <div className="dashboard">
       <section className="hero-card reveal">
@@ -6,73 +80,62 @@ export default function Home() {
           <p className="eyebrow">Today</p>
           <h2 className="hero-title">A shared space for tiny moments.</h2>
           <p className="hero-copy">
-            Capture notes, track training, and curate the places you want to go
-            together.
+            Capture notes, track training, and keep your shared routines in one place.
           </p>
         </div>
         <div className="hero-actions">
-          <button className="btn primary">Add a note</button>
-          <button className="btn ghost">Plan a trip</button>
+          <Link className="btn primary" href={notesLink}>
+            Add a note
+          </Link>
+          <Link className="btn ghost" href={trainingsLink}>
+            Add training
+          </Link>
         </div>
       </section>
+
+      {status === "unauthenticated" ? (
+        <div className="card">
+          <p className="card-body">Sign in to see your dashboard.</p>
+        </div>
+      ) : null}
+
+      {!currentProject.id && status === "authenticated" ? (
+        <div className="card">
+          <p className="card-body">Select a project to load your dashboard.</p>
+        </div>
+      ) : null}
+
+      {error ? (
+        <div className="card">
+          <p className="card-body">{error}</p>
+        </div>
+      ) : null}
 
       <section className="grid-two">
         <div className="card reveal">
           <div className="card-header">
-            <h3>Message of the day</h3>
-            <span className="badge">for you</span>
-          </div>
-          <p className="card-body">
-            "Proud of your consistency this week. Lets do a sunset run on
-            Saturday?"
-          </p>
-          <p className="card-meta">From Lia · 2 hours ago</p>
-        </div>
-        <div className="card reveal">
-          <div className="card-header">
-            <h3>Upcoming plans</h3>
-            <span className="badge">3 items</span>
-          </div>
-          <ul className="list">
-            <li>Kyoto temple walk · March</li>
-            <li>Homemade ramen night · Friday</li>
-            <li>Strength session · Sunday</li>
-          </ul>
-        </div>
-      </section>
-
-      <section className="grid-three">
-        <div className="card reveal">
-          <div className="card-header">
             <h3>Recent notes</h3>
-            <span className="badge">6</span>
+            <span className="badge">Latest</span>
           </div>
           <ul className="list">
-            <li>Buy film for the weekend trip.</li>
-            <li>Remember: basil for the pasta.</li>
-            <li>Look into a new climbing gym.</li>
+            {notes.length === 0 ? <li>No notes yet.</li> : null}
+            {notes.map((note) => (
+              <li key={note.id}>{note.title}</li>
+            ))}
           </ul>
         </div>
         <div className="card reveal">
           <div className="card-header">
             <h3>Trainings</h3>
-            <span className="badge">This week</span>
+            <span className="badge">Latest</span>
           </div>
           <ul className="list">
-            <li>Intervals · 35 min · RPE 7</li>
-            <li>Upper body · 50 min · RPE 6</li>
-            <li>Yoga · 30 min · RPE 4</li>
-          </ul>
-        </div>
-        <div className="card reveal">
-          <div className="card-header">
-            <h3>Places visited</h3>
-            <span className="badge">Last 30 days</span>
-          </div>
-          <ul className="list">
-            <li>Lake Zurich promenade</li>
-            <li>Old Town coffee walk</li>
-            <li>Museum night</li>
+            {trainings.length === 0 ? <li>No trainings yet.</li> : null}
+            {trainings.map((training) => (
+              <li key={training.id}>
+                {training.title} · {training.duration} min
+              </li>
+            ))}
           </ul>
         </div>
       </section>

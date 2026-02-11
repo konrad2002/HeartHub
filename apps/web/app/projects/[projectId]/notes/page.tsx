@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { useSession } from "next-auth/react";
-import { useParams } from "next/navigation";
+import { useParams, useSearchParams } from "next/navigation";
 import { useCurrentProject } from "../../../current-project-context";
 
 type Note = {
@@ -17,6 +17,7 @@ export default function ProjectNotesPage() {
   const { projectId } = useParams<{ projectId: string }>();
   const { data: session, status } = useSession();
   const { currentProject, setCurrentProject } = useCurrentProject();
+  const searchParams = useSearchParams();
   const [notes, setNotes] = useState<Note[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -30,6 +31,12 @@ export default function ProjectNotesPage() {
     () => process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:3001",
     [],
   );
+
+  useEffect(() => {
+    if (searchParams.get("new") === "1") {
+      setShowForm(true);
+    }
+  }, [searchParams]);
 
   useEffect(() => {
     if (status !== "authenticated") {

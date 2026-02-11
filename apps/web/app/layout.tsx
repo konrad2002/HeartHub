@@ -1,9 +1,11 @@
 import type {Metadata} from "next";
 import {Fraunces, Space_Grotesk} from "next/font/google";
 import {AuthStatus} from "./auth-status";
+import {InviteButton} from "./invite-button";
 import {ProjectSelector} from "./project-selector";
 import {AppNav} from "./nav";
 import {Providers} from "./providers";
+import {QuickAdd} from "./quick-add";
 import "./globals.css";
 
 const spaceGrotesk = Space_Grotesk({
@@ -38,17 +40,14 @@ export default function RootLayout({
                     </div>
                     <AppNav />
                     <div className="sidebar-card">
-                        <p className="sidebar-title">Quick add</p>
-                        <button className="chip">Note</button>
-                        <button className="chip">Training</button>
-                        <button className="chip">Place</button>
+                        <QuickAdd />
                     </div>
                 </aside>
                 <div className="app-main">
                     <header className="app-header">
                         <ProjectSelector />
                         <div className="header-actions">
-                            <button className="btn ghost">Invite</button>
+                            <InviteButton />
                             <AuthStatus />
                         </div>
                     </header>

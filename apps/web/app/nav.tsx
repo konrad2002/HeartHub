@@ -30,9 +30,6 @@ export function AppNav() {
       >
         Trainings
       </Link>
-      <a className="nav-item" href="#">
-        Locations
-      </a>
       <Link
         className={`nav-item${isActive(`/projects/${currentProject.id}/members`) ? " active" : ""}`}
         href={currentProject.id ? `/projects/${currentProject.id}/members` : "/projects"}

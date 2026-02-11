@@ -99,6 +99,11 @@ a {
   box-shadow: var(--shadow);
 }
 
+.quick-add {
+  display: grid;
+  gap: 8px;
+}
+
 .sidebar-title {
   margin: 0 0 4px;
   font-size: 14px;
@@ -253,6 +258,27 @@ a {
   display: flex;
   align-items: center;
   gap: 10px;
+}
+
+.invite-control {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.invite-code {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ink);
+  background: #fff;
+  border: 1px solid var(--border);
+  padding: 6px 10px;
+  border-radius: 999px;
+}
+
+.invite-error {
+  font-size: 12px;
+  color: #b02b2b;
 }
 
 .auth-status {
