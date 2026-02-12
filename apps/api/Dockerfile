@@ -35,8 +35,9 @@ COPY package.json package-lock.json* ./
 # Install production dependencies only
 RUN npm ci --only=production
 
-# Copy prisma schema for runtime
+# Copy prisma schema and config for runtime
 COPY prisma ./prisma/
+COPY prisma.config.ts ./prisma.config.ts
 
 # Copy built application from builder stage
 COPY --from=builder /app/dist ./dist
