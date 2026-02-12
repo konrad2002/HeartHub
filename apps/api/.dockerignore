@@ -39,6 +39,3 @@ dist
 README.md
 *.md
 
-# Prisma migrations (keep schema.prisma)
-prisma/migrations
-
